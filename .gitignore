@@ -1,0 +1,6 @@
+node_modules
+dist
+public/pdfjs
+session-*.md
+*.local
+.DS_Store
