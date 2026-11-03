@@ -252,45 +252,51 @@ function launchBrowser(url) {
     '--window-position=0,0',
   ];
 
-  // Detect browsers
+  // Detect browsers (prefer native desktop app to avoid flatpak browser grouping)
   const candidates = [
-    // Flatpak Brave
+    // 1. Native GTK WebKit Desktop App (Standalone Linux desktop app, own taskbar group & icon)
     {
-      check: 'flatpak info com.brave.Browser',
-      cmd: 'flatpak',
-      args: ['run', 'com.brave.Browser', ...commonArgs],
+      check: 'python3 -c "import gi; gi.require_version(\'Gtk\', \'3.0\'); gi.require_version(\'WebKit2\', \'4.1\')"',
+      cmd: 'python3',
+      args: [path.join(__dirname, 'desktop-app.py'), url],
     },
-    // Flatpak Chrome
-    {
-      check: 'flatpak info com.google.Chrome',
-      cmd: 'flatpak',
-      args: ['run', 'com.google.Chrome', ...commonArgs],
-    },
-    // Native Brave
-    {
-      check: 'which brave-browser',
-      cmd: 'brave-browser',
-      args: commonArgs,
-    },
-    // Native Google Chrome
+    // 2. Native Google Chrome
     {
       check: 'which google-chrome',
       cmd: 'google-chrome',
       args: commonArgs,
     },
-    // Native Chromium
+    // 3. Native Chromium
     {
       check: 'which chromium',
       cmd: 'chromium',
       args: commonArgs,
     },
-    // Firefox
+    // 4. Native Brave
+    {
+      check: 'which brave-browser',
+      cmd: 'brave-browser',
+      args: commonArgs,
+    },
+    // 5. Native Firefox
     {
       check: 'which firefox',
       cmd: 'firefox',
       args: ['--new-window', url],
     },
-    // Fallback: xdg-open
+    // 6. Flatpak Chrome
+    {
+      check: 'flatpak info com.google.Chrome',
+      cmd: 'flatpak',
+      args: ['run', 'com.google.Chrome', ...commonArgs],
+    },
+    // 7. Flatpak Brave
+    {
+      check: 'flatpak info com.brave.Browser',
+      cmd: 'flatpak',
+      args: ['run', 'com.brave.Browser', ...commonArgs],
+    },
+    // 8. Fallback: xdg-open
     {
       check: 'which xdg-open',
       cmd: 'xdg-open',
