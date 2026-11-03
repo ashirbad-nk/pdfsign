@@ -14,9 +14,10 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { clamp } from '../lib/coords';
-import { FONTS, FONT_BY_ID, cssFont } from '../lib/fonts';
+import { FONT_BY_ID } from '../lib/fonts';
 import type { FontCategory, FontId, SignaturePlacement, TextPlacement } from '../lib/types';
 import PenColorPicker from './PenColorPicker';
+import FontPicker from './FontPicker';
 import { getCachedRecoloredSignature, recolorSignatureDataUrl } from '../lib/image';
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -373,50 +374,17 @@ export default function Inspector() {
               }}
               onChange={(e) => updatePlacement(selected.id, { text: e.target.value })}
             />
-            <div
-              className="text-preview"
-              style={{ fontFamily: cssFont(text.fontId), color: text.color }}
-            >
-              {text.text.split('\n')[0] || 'Preview'}
-            </div>
           </Section>
 
           <Section title="Font & Style">
             <Field label="Font family">
-              <select
-                className="select-input font-select"
-                style={{ fontFamily: cssFont(text.fontId) }}
+              <FontPicker
                 value={text.fontId}
-                onChange={(e) => {
+                onChange={(fontId) => {
                   pushHistory();
-                  updatePlacement(selected.id, { fontId: e.target.value as FontId });
+                  updatePlacement(selected.id, { fontId });
                 }}
-              >
-                <optgroup label="✍️ Fine Handwriting (No bold)">
-                  {FONTS.filter((f) => f.category === 'handwriting').map((font) => (
-                    <option key={font.id} value={font.id}>
-                      {font.name} — {font.description}
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label="📄 Standard Document Print">
-                  {FONTS.filter((f) => f.category === 'standard').map((font) => (
-                    <option key={font.id} value={font.id}>
-                      {font.name} — {font.description}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
-            </Field>
-
-            <Field label="Live preview">
-              <div
-                className="text-preview"
-                style={{ fontFamily: cssFont(text.fontId), color: text.color || penColor }}
-                title="Live font preview"
-              >
-                {text.text.trim().split('\n')[0] || 'Sample text 123'}
-              </div>
+              />
             </Field>
 
             <Field label="Size">

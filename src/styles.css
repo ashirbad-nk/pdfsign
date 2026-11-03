@@ -2891,3 +2891,175 @@ input[type="range"] {
 .footer-note {
   color: #71717a;
 }
+
+/* Custom Font Picker */
+.font-picker {
+  position: relative;
+  width: 100%;
+}
+
+.font-picker-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: #18181b;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  color: #f4f4f5;
+}
+
+.font-picker-trigger:hover {
+  background: #202024;
+  border-color: #52525b;
+}
+
+.font-picker-trigger.open {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.font-picker-trigger-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.font-picker-current-name {
+  font-size: 17px;
+  line-height: 1.25;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-picker-current-desc {
+  font-size: 11px;
+  color: #a1a1aa;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-picker-chevron {
+  color: #a1a1aa;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.font-picker-chevron.rotated {
+  transform: rotate(180deg);
+  color: #818cf8;
+}
+
+.font-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  background: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 10px;
+  box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.65), 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.font-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.font-picker-group:not(:first-child) {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #27272a;
+}
+
+.font-picker-group-title {
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #818cf8;
+  padding: 4px 8px 2px 8px;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+}
+
+.font-picker-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+  color: #f4f4f5;
+}
+
+.font-picker-item:hover,
+.font-picker-item:focus-visible {
+  background: #27272a;
+  outline: none;
+}
+
+.font-picker-item.selected {
+  background: #2e2e38;
+}
+
+.font-picker-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+}
+
+.font-picker-sample {
+  font-size: 18px;
+  line-height: 1.3;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-picker-sample.handwriting-sample {
+  font-size: 19px;
+}
+
+.font-picker-sample.standard-sample {
+  font-size: 15px;
+}
+
+.font-picker-item-desc {
+  font-size: 11px;
+  color: #9ca3af;
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.font-picker-check {
+  color: #818cf8;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
