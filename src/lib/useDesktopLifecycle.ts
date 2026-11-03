@@ -13,16 +13,6 @@ export function useDesktopLifecycle() {
 
     if (!isLocalhost) return;
 
-    // Open in window fullscreen / maximized by default in local desktop mode
-    try {
-      if (typeof window !== 'undefined' && window.resizeTo && window.screen) {
-        window.moveTo(0, 0);
-        window.resizeTo(window.screen.availWidth, window.screen.availHeight);
-      }
-    } catch {
-      // ignore if restricted
-    }
-
     // Send initial heartbeat
     const ping = () => {
       fetch('/api/heartbeat', { method: 'POST', keepalive: true }).catch(() => {});

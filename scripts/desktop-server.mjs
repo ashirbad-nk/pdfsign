@@ -200,12 +200,41 @@ async function start() {
 function launchBrowser(url) {
   const profileDir = path.join('/tmp', 'pdfsign-desktop-profile');
   try {
-    if (!fs.existsSync(profileDir)) {
-      fs.mkdirSync(profileDir, { recursive: true });
+    const defaultDir = path.join(profileDir, 'Default');
+    fs.mkdirSync(defaultDir, { recursive: true });
+    const prefPath = path.join(defaultDir, 'Preferences');
+    let prefs = {};
+    if (fs.existsSync(prefPath)) {
+      try {
+        prefs = JSON.parse(fs.readFileSync(prefPath, 'utf8'));
+      } catch {
+        // ignore
+      }
     }
+    prefs.browser = prefs.browser || {};
+    prefs.browser.window_placement = {
+      bottom: 1080,
+      left: 0,
+      maximized: true,
+      right: 1920,
+      top: 0,
+      work_area_bottom: 1040,
+      work_area_left: 0,
+      work_area_right: 1920,
+      work_area_top: 0,
+    };
+    fs.writeFileSync(prefPath, JSON.stringify(prefs));
   } catch {
     // ignore
   }
+
+  const commonArgs = [
+    `--app=${url}`,
+    `--user-data-dir=${profileDir}`,
+    '--start-maximized',
+    '--window-size=1920,1080',
+    '--window-position=0,0',
+  ];
 
   // Detect browsers
   const candidates = [
@@ -213,60 +242,31 @@ function launchBrowser(url) {
     {
       check: 'flatpak info com.brave.Browser',
       cmd: 'flatpak',
-      args: [
-        'run',
-        'com.brave.Browser',
-        `--app=${url}`,
-        `--user-data-dir=${profileDir}`,
-        '--start-maximized',
-        '--window-position=0,0',
-      ],
+      args: ['run', 'com.brave.Browser', ...commonArgs],
     },
     // Flatpak Chrome
     {
       check: 'flatpak info com.google.Chrome',
       cmd: 'flatpak',
-      args: [
-        'run',
-        'com.google.Chrome',
-        `--app=${url}`,
-        `--user-data-dir=${profileDir}`,
-        '--start-maximized',
-        '--window-position=0,0',
-      ],
+      args: ['run', 'com.google.Chrome', ...commonArgs],
     },
     // Native Brave
     {
       check: 'which brave-browser',
       cmd: 'brave-browser',
-      args: [
-        `--app=${url}`,
-        `--user-data-dir=${profileDir}`,
-        '--start-maximized',
-        '--window-position=0,0',
-      ],
+      args: commonArgs,
     },
     // Native Google Chrome
     {
       check: 'which google-chrome',
       cmd: 'google-chrome',
-      args: [
-        `--app=${url}`,
-        `--user-data-dir=${profileDir}`,
-        '--start-maximized',
-        '--window-position=0,0',
-      ],
+      args: commonArgs,
     },
     // Native Chromium
     {
       check: 'which chromium',
       cmd: 'chromium',
-      args: [
-        `--app=${url}`,
-        `--user-data-dir=${profileDir}`,
-        '--start-maximized',
-        '--window-position=0,0',
-      ],
+      args: commonArgs,
     },
     // Firefox
     {
@@ -303,6 +303,23 @@ function launchBrowser(url) {
     detached: false,
     stdio: 'ignore',
   });
+
+  // Ensure window manager maximizes the window without delay
+  setTimeout(() => {
+    try {
+      execSync('wmctrl -r "pdfsign" -b add,maximized_vert,maximized_horz 2>/dev/null || true');
+    } catch {
+      // ignore
+    }
+  }, 200);
+
+  setTimeout(() => {
+    try {
+      execSync('wmctrl -r "pdfsign" -b add,maximized_vert,maximized_horz 2>/dev/null || true');
+    } catch {
+      // ignore
+    }
+  }, 600);
 
   browserProcess.on('exit', (code) => {
     // If the process exits, wait briefly to see if heartbeats continue (in case browser handed off to existing instance)
