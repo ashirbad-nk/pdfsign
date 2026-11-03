@@ -11,6 +11,16 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 const DIST_DIR = path.resolve(ROOT_DIR, 'dist');
 
+// Bypass proxy completely for local loopback
+process.env.no_proxy = 'localhost,127.0.0.1,::1,' + (process.env.no_proxy || '');
+process.env.NO_PROXY = 'localhost,127.0.0.1,::1,' + (process.env.NO_PROXY || '');
+delete process.env.http_proxy;
+delete process.env.https_proxy;
+delete process.env.all_proxy;
+delete process.env.HTTP_PROXY;
+delete process.env.HTTPS_PROXY;
+delete process.env.ALL_PROXY;
+
 // Ensure dist/ is built
 if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   console.log('[pdfsign] Building production bundle for desktop app...');
@@ -247,6 +257,8 @@ function launchBrowser(url) {
     '--class=pdfsign',
     '--name=pdfsign',
     '--app-id=pdfsign',
+    '--no-proxy-server',
+    '--proxy-bypass-list=<-loopback>;127.0.0.1;localhost',
     '--start-maximized',
     '--window-size=1920,1080',
     '--window-position=0,0',

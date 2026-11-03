@@ -22,6 +22,12 @@ def main():
         print("Usage: desktop-app.py <url>")
         sys.exit(1)
 
+    # Completely bypass proxy for local loopback (localhost / 127.0.0.1)
+    for var in ['http_proxy', 'https_proxy', 'all_proxy', 'HTTP_PROXY', 'HTTPS_PROXY', 'ALL_PROXY']:
+        os.environ.pop(var, None)
+    os.environ['no_proxy'] = 'localhost,127.0.0.1,::1'
+    os.environ['NO_PROXY'] = 'localhost,127.0.0.1,::1'
+
     url = sys.argv[1]
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     icon_path = os.path.join(root_dir, 'public', 'icons', 'icon-512.png')
@@ -54,6 +60,12 @@ def main():
         base_cache_directory=cache_dir
     )
     web_context = WebKit2.WebContext.new_with_website_data_manager(website_data_manager)
+
+    # Disable proxy completely for local WebKit traffic
+    try:
+        web_context.set_network_proxy_settings(WebKit2.NetworkProxyMode.NO_PROXY, None)
+    except Exception as e:
+        print(f"[desktop-app] Warning setting proxy: {e}", file=sys.stderr)
 
     # Handle automatic file downloads (e.g. Download PDF button)
     def on_download_started(context, download):

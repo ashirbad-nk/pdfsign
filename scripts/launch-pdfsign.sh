@@ -7,6 +7,11 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 cd "$PROJECT_ROOT"
 
+# Ensure proxy is bypassed for local application
+export no_proxy="localhost,127.0.0.1,::1,${no_proxy:-}"
+export NO_PROXY="localhost,127.0.0.1,::1,${NO_PROXY:-}"
+unset http_proxy https_proxy all_proxy HTTP_PROXY HTTPS_PROXY ALL_PROXY
+
 # Ensure Node.js is on PATH (handles NVM, Volta, standard PATH)
 if ! command -v node &>/dev/null; then
   if [ -s "$HOME/.nvm/nvm.sh" ]; then
