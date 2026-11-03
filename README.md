@@ -83,8 +83,8 @@ The output will be generated in `dist/`.
 ## ☁️ Deploy to Cloudflare Pages
 
 This repository is pre-configured for Cloudflare Pages:
-- Static routing via `public/_redirects`
-- Performance and caching headers via `public/_headers`
+- Native SPA routing and offline Service Worker
+- Performance, security, and caching headers via `public/_headers`
 - Node 20 runtime pinned via `.node-version`
 - Automatic PDF.js worker asset copying on `prebuild`
 
