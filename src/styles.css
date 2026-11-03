@@ -1542,9 +1542,15 @@ input[type="range"] {
 
 .pen-palette-btn.is-custom {
   border-style: solid;
-  border-color: #ffffff;
-  color: #ffffff;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
   box-shadow: 0 0 0 2px var(--accent), 0 2px 6px rgba(0, 0, 0, 0.35);
+  transform: scale(1.08);
+}
+
+.pen-palette-icon-custom {
+  color: #ffffff;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.85));
 }
 
 .pen-palette-popover {
@@ -1561,7 +1567,8 @@ input[type="range"] {
   animation: popoverFadeIn 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.pen-toolbar-group .pen-palette-popover {
+.pen-toolbar-group .pen-palette-popover,
+.modal-tabs-pen .pen-palette-popover {
   left: auto;
   right: 0;
 }
@@ -2693,7 +2700,7 @@ input[type="range"] {
 }
 
 .pen-swatch.is-active {
-  border-color: #18181b;
+  border-color: #ffffff;
   box-shadow: 0 0 0 2px #818cf8, 0 2px 7px rgba(0, 0, 0, 0.55);
 }
 

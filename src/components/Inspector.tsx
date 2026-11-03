@@ -31,10 +31,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="field">
+    <div className="field">
       <span className="field-label">{label}</span>
       {children}
-    </label>
+    </div>
   );
 }
 

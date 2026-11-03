@@ -71,7 +71,9 @@ export default function PenColorPicker({
               title={pen.label}
               className={`pen-swatch pen-swatch-${pen.id} ${isActive ? 'is-active' : ''}`}
               style={{ backgroundColor: pen.value }}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
                 onChange(pen.value);
                 setPaletteOpen(false);
               }}
@@ -91,16 +93,20 @@ export default function PenColorPicker({
         <button
           type="button"
           aria-label="More colour shades"
-          title={isCustomColor ? `Custom colour: ${activeLabel}` : 'More colour shades'}
+          title={isCustomColor ? `Custom colour: ${activeLabel} (click to change)` : 'More colour shades'}
           className={`pen-swatch pen-palette-btn ${isCustomColor ? 'is-active is-custom' : ''} ${paletteOpen ? 'is-open' : ''}`}
           style={isCustomColor ? { backgroundColor: value } : undefined}
-          onClick={() => setPaletteOpen((open) => !open)}
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            setPaletteOpen((open) => !open);
+          }}
         >
-          {isCustomColor ? (
-            <Check size={compact ? 11 : 13} strokeWidth={3} className="pen-swatch-check" />
-          ) : (
-            <Palette size={compact ? 12 : 14} strokeWidth={2} />
-          )}
+          <Palette
+            size={compact ? 12 : 14}
+            strokeWidth={2.2}
+            className={isCustomColor ? 'pen-palette-icon-custom' : ''}
+          />
         </button>
       </div>
 
@@ -112,7 +118,12 @@ export default function PenColorPicker({
 
       {/* Clean grid of colors across different shades */}
       {paletteOpen && (
-        <div className="pen-palette-popover" role="dialog" aria-label="Colour palette">
+        <div
+          className="pen-palette-popover"
+          role="dialog"
+          aria-label="Colour palette"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="pen-palette-header">
             <span className="pen-palette-title">Colour shades</span>
             <span className="pen-palette-selected-label">{activeLabel}</span>
@@ -131,7 +142,9 @@ export default function PenColorPicker({
                       style={{ backgroundColor: shade.value }}
                       title={`${group.name}: ${shade.label} (${shade.value})`}
                       aria-label={`${group.name}: ${shade.label}`}
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
                         onChange(shade.value);
                         setPaletteOpen(false);
                       }}

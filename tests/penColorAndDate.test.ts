@@ -274,3 +274,70 @@ describe('Signature recoloring utility', () => {
     expect(getCachedRecoloredSignature('some-url', '')).toBe('some-url');
   });
 });
+
+describe('Palette selector shades and Inspector integrity', () => {
+  beforeEach(() => {
+    useAppStore.setState({
+      pages: [
+        {
+          index: 0,
+          width: 600,
+          height: 800,
+          rotation: 0,
+          transform: [1, 0, 0, 1, 0, 0],
+        },
+      ],
+      assets: {
+        'asset-1': {
+          id: 'asset-1',
+          name: 'My signature',
+          dataUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+          width: 100,
+          height: 50,
+          createdAt: Date.now(),
+        },
+      },
+      placements: [],
+      selectedId: null,
+      penColor: DEFAULT_PEN_COLOR,
+      history: [],
+      future: [],
+    });
+  });
+
+  it('allows selecting any shade from the 32 palette colors and retains it without turning black', () => {
+    const store = useAppStore.getState();
+    store.addSignatureAt('asset-1', 0, 100, 100);
+    const item = useAppStore.getState().placements[0];
+    store.select(item.id);
+
+    // Test a sample of custom shades across families (purple, orange, teal, green, sky blue)
+    const testShades = [
+      '#c084fc', // Lavender (Purple)
+      '#9333ea', // Violet Ink
+      '#fb923c', // Tangerine (Orange)
+      '#2dd4bf', // Aqua / Cyan (Teal)
+      '#4ade80', // Mint Green
+      '#60a5fa', // Sky Blue
+    ];
+
+    for (const shade of testShades) {
+      store.setPenColor(shade);
+      const currentItem = useAppStore.getState().placements.find((p) => p.id === item.id);
+      expect(currentItem?.color).toBe(shade);
+      expect(useAppStore.getState().penColor).toBe(shade);
+      expect(currentItem?.color).not.toBe('#18181b'); // Must not turn black
+    }
+  });
+
+  it('guarantees Inspector Field wrapper is a div and not a label to prevent accidental radio clicks', () => {
+    const inspectorSource = fs.readFileSync(
+      path.resolve(__dirname, '../src/components/Inspector.tsx'),
+      'utf-8',
+    );
+
+    // Field definition must use <div className="field">, NOT <label className="field">
+    expect(inspectorSource).toContain('<div className="field">');
+    expect(inspectorSource).not.toMatch(/<label\s+className=["']field["']/);
+  });
+});
