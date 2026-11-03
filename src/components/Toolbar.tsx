@@ -3,6 +3,7 @@ import {
   CalendarDays,
   ChevronDown,
   Download,
+  DownloadCloud,
   FolderOpen,
   Loader2,
   PenLine,
@@ -15,8 +16,10 @@ import { buildSignedPdf } from '../lib/exportPdf';
 import { openPdfFile } from '../lib/openFile';
 import { DATE_FORMATS, formatDate, type DateFormat } from '../lib/types';
 import PenColorPicker from './PenColorPicker';
+import { usePwa } from '../lib/usePwa';
 
 export default function Toolbar() {
+  const { canInstall, promptInstall } = usePwa();
   const fileName = useAppStore((s) => s.fileName);
   const baseName = useAppStore((s) => s.baseName);
   const pages = useAppStore((s) => s.pages);
@@ -174,6 +177,17 @@ export default function Toolbar() {
             </div>
           )}
         </div>
+
+        {canInstall && (
+          <button
+            className="btn btn-ghost btn-install-pwa"
+            onClick={promptInstall}
+            title="Install PDFSign on your device"
+          >
+            <DownloadCloud size={16} />
+            <span>Install App</span>
+          </button>
+        )}
 
         <button className="btn btn-ghost" onClick={() => inputRef.current?.click()}>
           {loadingPdf ? <Loader2 size={16} className="spin" /> : <FolderOpen size={16} />}

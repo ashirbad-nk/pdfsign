@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=PDFSign
+GenericName=PDF Signing & Annotation
+Comment=100% private, client-side PDF signing and annotation
+Exec=/home/ashirbad/Documents/codes/pdfsign/scripts/launch-pdfsign.sh
+Icon=/home/ashirbad/Documents/codes/pdfsign/public/icons/icon-512.png
+Terminal=false
+Categories=Office;Utility;Graphics;
+Keywords=pdf;sign;signature;annotation;
+StartupNotify=true
+StartupWMClass=pdfsign

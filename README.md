@@ -20,7 +20,35 @@ No server uploads, no logins, no telemetry — your documents never leave your b
 - 📝 **Handwritten & Typed Text**: Add annotations in cursive, script, or clean print styles with customizable font sizes, letter spacing, and line spacing.
 - 🔒 **100% Client-Side & Private**: All rendering and PDF generation happens directly in your browser.
 - 📱 **Responsive & Accessible**: Works on desktop, tablets, and mobile devices with keyboard navigation and light/dark theme support.
+- 📱 **Progressive Web App (PWA)**: Installable directly from Cloudflare Pages on Chrome, Edge, Safari (iOS), and Android with offline caching and native window controls.
+- 🖥️ **Local Desktop Shortcut & Auto-Stop Server**: Includes a Linux `.desktop` launcher that starts the server, opens a standalone chromeless app window, and automatically terminates the server the instant the GUI window is closed.
 - ⚡ **Optimized for Cloudflare Pages**: Ready for zero-config Git deployments on Cloudflare Pages.
+
+---
+
+## 🖥️ Local Desktop App (Clickable Launcher)
+
+To run PDFSign as a standalone local desktop application with automatic server lifecycle management:
+
+```bash
+# Copy the desktop launcher to your Desktop
+cp PDFSign.desktop ~/Desktop/
+chmod +x ~/Desktop/PDFSign.desktop
+```
+*(On GNOME / Ubuntu desktops, right-click `PDFSign.desktop` on your desktop and select **"Allow Launching"**).*
+
+- **How it works**:
+  - Clicking the shortcut starts an ultra-fast local server and opens PDFSign in a chromeless app window.
+  - When you close the app window (clicking the `X` button), the local server detects the window close via heartbeat/beacon and **automatically terminates**. No leftover background processes or stuck ports!
+
+---
+
+## 📱 Progressive Web App (PWA)
+
+When deployed to Cloudflare Pages (or running over HTTPS):
+- An **"Install App"** button appears in the toolbar on Chromium browsers and mobile.
+- Users can install PDFSign to their home screen or app launcher.
+- Full offline caching is enabled via Service Worker (`sw.js`).
 
 ---
 

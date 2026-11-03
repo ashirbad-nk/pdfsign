@@ -10,10 +10,14 @@ import { ensureFontsLoaded } from './lib/fonts';
 import { useAppStore } from './lib/store';
 import { openPdfFile } from './lib/openFile';
 import { clamp } from './lib/coords';
+import { useDesktopLifecycle } from './lib/useDesktopLifecycle';
 
 export default function App() {
   const [dragging, setDragging] = useState(false);
   const dragDepth = useRef(0);
+
+  // Auto-stop server when app window is closed in local desktop mode
+  useDesktopLifecycle();
 
   useEffect(() => {
     void ensureFontsLoaded();
