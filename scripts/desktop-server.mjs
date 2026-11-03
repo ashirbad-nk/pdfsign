@@ -17,6 +17,18 @@ if (!fs.existsSync(path.join(DIST_DIR, 'index.html'))) {
   execSync('npm run build', { cwd: ROOT_DIR, stdio: 'inherit' });
 }
 
+// Ensure desktop entry and icons are installed in ~/.local/share
+function ensureDesktopEntry() {
+  try {
+    const installScript = path.join(__dirname, 'install-desktop.py');
+    if (fs.existsSync(installScript)) {
+      execSync(`python3 "${installScript}" 2>/dev/null || true`);
+    }
+  } catch {
+    // ignore
+  }
+}
+
 // MIME types lookup
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -87,6 +99,7 @@ function stopServer(reason = 'Normal shutdown') {
 
 // Start HTTP Server
 async function start() {
+  ensureDesktopEntry();
   const port = await findAvailablePort(5174);
   const appUrl = `http://127.0.0.1:${port}`;
 
@@ -231,6 +244,9 @@ function launchBrowser(url) {
   const commonArgs = [
     `--app=${url}`,
     `--user-data-dir=${profileDir}`,
+    '--class=pdfsign',
+    '--name=pdfsign',
+    '--app-id=pdfsign',
     '--start-maximized',
     '--window-size=1920,1080',
     '--window-position=0,0',
@@ -304,22 +320,20 @@ function launchBrowser(url) {
     stdio: 'ignore',
   });
 
-  // Ensure window manager maximizes the window without delay
-  setTimeout(() => {
+  // Apply window maximization and icon without delay
+  const applyWindowProps = () => {
     try {
       execSync('wmctrl -r "pdfsign" -b add,maximized_vert,maximized_horz 2>/dev/null || true');
+      execSync(`python3 "${path.join(__dirname, 'set-window-icon.py')}" 2>/dev/null || true`);
     } catch {
       // ignore
     }
-  }, 200);
+  };
 
-  setTimeout(() => {
-    try {
-      execSync('wmctrl -r "pdfsign" -b add,maximized_vert,maximized_horz 2>/dev/null || true');
-    } catch {
-      // ignore
-    }
-  }, 600);
+  setTimeout(applyWindowProps, 250);
+  setTimeout(applyWindowProps, 600);
+  setTimeout(applyWindowProps, 1200);
+  setTimeout(applyWindowProps, 2500);
 
   browserProcess.on('exit', (code) => {
     // If the process exits, wait briefly to see if heartbeats continue (in case browser handed off to existing instance)
