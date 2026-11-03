@@ -213,31 +213,60 @@ function launchBrowser(url) {
     {
       check: 'flatpak info com.brave.Browser',
       cmd: 'flatpak',
-      args: ['run', 'com.brave.Browser', `--app=${url}`, `--user-data-dir=${profileDir}`],
+      args: [
+        'run',
+        'com.brave.Browser',
+        `--app=${url}`,
+        `--user-data-dir=${profileDir}`,
+        '--start-maximized',
+        '--window-position=0,0',
+      ],
     },
     // Flatpak Chrome
     {
       check: 'flatpak info com.google.Chrome',
       cmd: 'flatpak',
-      args: ['run', 'com.google.Chrome', `--app=${url}`, `--user-data-dir=${profileDir}`],
+      args: [
+        'run',
+        'com.google.Chrome',
+        `--app=${url}`,
+        `--user-data-dir=${profileDir}`,
+        '--start-maximized',
+        '--window-position=0,0',
+      ],
     },
     // Native Brave
     {
       check: 'which brave-browser',
       cmd: 'brave-browser',
-      args: [`--app=${url}`, `--user-data-dir=${profileDir}`],
+      args: [
+        `--app=${url}`,
+        `--user-data-dir=${profileDir}`,
+        '--start-maximized',
+        '--window-position=0,0',
+      ],
     },
     // Native Google Chrome
     {
       check: 'which google-chrome',
       cmd: 'google-chrome',
-      args: [`--app=${url}`, `--user-data-dir=${profileDir}`],
+      args: [
+        `--app=${url}`,
+        `--user-data-dir=${profileDir}`,
+        '--start-maximized',
+        '--window-position=0,0',
+      ],
     },
     // Native Chromium
     {
       check: 'which chromium',
       cmd: 'chromium',
-      args: [`--app=${url}`, `--user-data-dir=${profileDir}`],
+      args: [
+        `--app=${url}`,
+        `--user-data-dir=${profileDir}`,
+        '--start-maximized',
+        '--window-position=0,0',
+      ],
     },
     // Firefox
     {
