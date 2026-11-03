@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ImageOff, MousePointer2, Pencil, PenLine, Plus, Trash2, Type } from 'lucide-react';
+import { CalendarDays, ImageOff, MousePointer2, Pencil, PenLine, Plus, Trash2, Type } from 'lucide-react';
 import type { RenderTask } from 'pdfjs-dist';
 import { startPageRender } from '../lib/pdfEngine';
 import {
@@ -8,7 +8,7 @@ import {
   renameSignatureInLibrary,
 } from '../lib/library';
 import { useAppStore } from '../lib/store';
-import type { PageInfo, SignatureAsset, Tool } from '../lib/types';
+import { DATE_FORMATS, formatDate, type PageInfo, type SignatureAsset, type Tool } from '../lib/types';
 
 const TOOLS: { id: Tool; label: string; hint: string; icon: typeof MousePointer2 }[] = [
   { id: 'select', label: 'Select', hint: 'V', icon: MousePointer2 },
@@ -62,6 +62,9 @@ export default function Sidebar() {
   const docId = useAppStore((s) => s.docId);
   const tool = useAppStore((s) => s.tool);
   const pendingAssetId = useAppStore((s) => s.pendingAssetId);
+  const pendingDate = useAppStore((s) => s.pendingDate);
+  const armDate = useAppStore((s) => s.armDate);
+  const cancelPlacing = useAppStore((s) => s.cancelPlacing);
   const setTool = useAppStore((s) => s.setTool);
   const setPage = useAppStore((s) => s.setPage);
   const addAsset = useAppStore((s) => s.addAsset);
@@ -119,7 +122,7 @@ export default function Sidebar() {
             return (
               <button
                 key={item.id}
-                className={`tool-btn ${tool === item.id ? 'active' : ''}`}
+                className={`tool-btn ${tool === item.id && !pendingDate ? 'active' : ''}`}
                 onClick={() => {
                   if (item.id === 'signature') {
                     setTool('signature');
@@ -136,16 +139,61 @@ export default function Sidebar() {
               </button>
             );
           })}
+
+          {/* Date Stamp Button right below Insert Text */}
+          <button
+            type="button"
+            className={`tool-btn ${pendingDate ? 'active' : ''}`}
+            onClick={() => {
+              if (!pages.length) {
+                showToast('Open a PDF first to place a date.', 'info');
+                return;
+              }
+              if (pendingDate) {
+                cancelPlacing();
+              } else {
+                armDate('ddmmyyyy');
+                showToast('Click anywhere on the document to place date stamp.', 'info');
+              }
+            }}
+            title="Stamp today's date"
+          >
+            <span className="tool-icon">
+              <CalendarDays size={17} />
+            </span>
+            <span className="tool-label">Date Stamp</span>
+            <kbd>D</kbd>
+          </button>
         </div>
-        {tool === 'signature' && (
+
+        {tool === 'signature' && !pendingDate && (
           <p className="section-hint">
             {pendingAssetId
               ? 'Now click anywhere on the page to place it.'
               : 'Pick a saved signature below, or create a new one.'}
           </p>
         )}
-        {tool === 'text' && (
+        {tool === 'text' && !pendingDate && (
           <p className="section-hint">Click anywhere on the document to insert text.</p>
+        )}
+        {pendingDate && (
+          <div className="section-hint date-stamp-hint">
+            <span>Click on the document to stamp:</span>
+            <strong>{formatDate(new Date(), pendingDate)}</strong>
+            <div className="date-chips" role="radiogroup" aria-label="Date formats">
+              {DATE_FORMATS.map((f) => (
+                <button
+                  key={f.id}
+                  type="button"
+                  className={`date-chip ${pendingDate === f.id ? 'is-active' : ''}`}
+                  onClick={() => armDate(f.id)}
+                  title={f.label}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
         )}
       </section>
 

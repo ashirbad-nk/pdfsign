@@ -382,60 +382,42 @@ export default function Inspector() {
           </Section>
 
           <Section title="Font & Style">
-            <div className="font-category-tabs" role="tablist">
-              <button
-                type="button"
-                role="tab"
-                aria-selected={fontCategory === 'handwriting'}
-                className={`font-tab-btn ${fontCategory === 'handwriting' ? 'active' : ''}`}
-                onClick={() => setFontCategory('handwriting')}
+            <Field label="Font family">
+              <select
+                className="select-input font-select"
+                style={{ fontFamily: cssFont(text.fontId) }}
+                value={text.fontId}
+                onChange={(e) => {
+                  pushHistory();
+                  updatePlacement(selected.id, { fontId: e.target.value as FontId });
+                }}
               >
-                <span>✍️ Fine Handwriting</span>
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={fontCategory === 'standard'}
-                className={`font-tab-btn ${fontCategory === 'standard' ? 'active' : ''}`}
-                onClick={() => setFontCategory('standard')}
-              >
-                <span>📄 Standard Print</span>
-              </button>
-            </div>
+                <optgroup label="✍️ Fine Handwriting (No bold)">
+                  {FONTS.filter((f) => f.category === 'handwriting').map((font) => (
+                    <option key={font.id} value={font.id}>
+                      {font.name} — {font.description}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="📄 Standard Document Print">
+                  {FONTS.filter((f) => f.category === 'standard').map((font) => (
+                    <option key={font.id} value={font.id}>
+                      {font.name} — {font.description}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </Field>
 
-            <div className="font-card-list">
-              {FONTS.filter((f) => f.category === fontCategory).map((font) => {
-                const isSelected = text.fontId === font.id;
-                const sampleText = text.text.trim().split('\n')[0] || 'Sample text';
-                return (
-                  <button
-                    key={font.id}
-                    type="button"
-                    className={`font-card ${isSelected ? 'is-selected' : ''}`}
-                    onClick={() => {
-                      pushHistory();
-                      updatePlacement(selected.id, { fontId: font.id });
-                    }}
-                  >
-                    <div className="font-card-header">
-                      <span className="font-card-name">{font.name}</span>
-                      <span className="font-card-desc">{font.description}</span>
-                    </div>
-                    <div
-                      className="font-card-preview"
-                      style={{ fontFamily: cssFont(font.id) }}
-                    >
-                      {sampleText}
-                    </div>
-                    {isSelected && (
-                      <div className="font-card-check">
-                        <Check size={11} strokeWidth={3} />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            <Field label="Live preview">
+              <div
+                className="text-preview"
+                style={{ fontFamily: cssFont(text.fontId), color: text.color || penColor }}
+                title="Live font preview"
+              >
+                {text.text.trim().split('\n')[0] || 'Sample text 123'}
+              </div>
+            </Field>
 
             <Field label="Size">
               <div className="input-with-unit">
@@ -454,7 +436,7 @@ export default function Inspector() {
                 <span>pt</span>
               </div>
             </Field>
-            <Field label="Colour">
+            <Field label="Pen colour">
               <PenColorPicker
                 value={text.color || penColor}
                 onChange={setPenColor}

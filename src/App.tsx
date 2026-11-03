@@ -138,6 +138,11 @@ export default function App() {
         state.setTool('signature');
       } else if (event.key === 't' || event.key === 'T') {
         state.setTool('text');
+      } else if ((event.key === 'd' || event.key === 'D') && !mod) {
+        if (state.pages.length) {
+          state.armDate('ddmmyyyy');
+          state.showToast('Click anywhere on the document to place date stamp.', 'info');
+        }
       } else if (event.key === '+' || event.key === '=') {
         state.setZoom(state.zoom + 0.1);
       } else if (event.key === '-' || event.key === '_') {
