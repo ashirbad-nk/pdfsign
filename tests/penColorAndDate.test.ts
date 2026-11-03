@@ -1,5 +1,14 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { formatDate, DATE_FORMATS, PEN_COLORS, DEFAULT_PEN_COLOR, type DateFormat, type TextPlacement, type SignaturePlacement } from '../src/lib/types';
+import {
+  formatDate,
+  DATE_FORMATS,
+  PEN_COLORS,
+  COLOR_SHADE_GROUPS,
+  DEFAULT_PEN_COLOR,
+  type DateFormat,
+  type TextPlacement,
+  type SignaturePlacement,
+} from '../src/lib/types';
 import { DEFAULT_FONT } from '../src/lib/fonts';
 import { useAppStore } from '../src/lib/store';
 import { getCachedRecoloredSignature, recolorSignatureDataUrl, adjustAlphaThickness } from '../src/lib/image';
@@ -32,6 +41,20 @@ describe('Pen colours configuration', () => {
 
   it('defaults to black pen ink', () => {
     expect(DEFAULT_PEN_COLOR).toBe('#18181b');
+  });
+
+  it('provides a curated grid of 32 shades across 8 color families', () => {
+    expect(COLOR_SHADE_GROUPS).toHaveLength(8);
+    const names = COLOR_SHADE_GROUPS.map((g) => g.name);
+    expect(names).toEqual(['Monochrome', 'Blue', 'Purple', 'Red', 'Orange', 'Green', 'Teal', 'Brown']);
+
+    for (const group of COLOR_SHADE_GROUPS) {
+      expect(group.shades).toHaveLength(4);
+      for (const shade of group.shades) {
+        expect(shade.value).toMatch(/^#[0-9a-f]{6}$/i);
+        expect(shade.label.length).toBeGreaterThan(0);
+      }
+    }
   });
 });
 

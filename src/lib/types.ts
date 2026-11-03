@@ -88,6 +88,91 @@ export const PEN_COLORS: PenColorDef[] = [
 
 export const DEFAULT_PEN_COLOR = PEN_COLORS[0].value;
 
+export interface ColorShade {
+  label: string;
+  value: string;
+}
+
+export interface ColorShadeGroup {
+  name: string;
+  shades: ColorShade[];
+}
+
+export const COLOR_SHADE_GROUPS: ColorShadeGroup[] = [
+  {
+    name: 'Monochrome',
+    shades: [
+      { label: 'Pencil Gray', value: '#9ca3af' },
+      { label: 'Slate Gray', value: '#4b5563' },
+      { label: 'Charcoal', value: '#374151' },
+      { label: 'Jet Black', value: '#111827' },
+    ],
+  },
+  {
+    name: 'Blue',
+    shades: [
+      { label: 'Sky Blue', value: '#60a5fa' },
+      { label: 'Classic Blue', value: '#2563eb' },
+      { label: 'Royal Blue', value: '#1d4ed8' },
+      { label: 'Deep Navy', value: '#1e3a8a' },
+    ],
+  },
+  {
+    name: 'Purple',
+    shades: [
+      { label: 'Lavender', value: '#c084fc' },
+      { label: 'Violet Ink', value: '#9333ea' },
+      { label: 'Deep Purple', value: '#7e22ce' },
+      { label: 'Dark Plum', value: '#581c87' },
+    ],
+  },
+  {
+    name: 'Red',
+    shades: [
+      { label: 'Warm Coral', value: '#f87171' },
+      { label: 'Vibrant Red', value: '#ef4444' },
+      { label: 'Crimson Ink', value: '#dc2626' },
+      { label: 'Dark Burgundy', value: '#7f1d1d' },
+    ],
+  },
+  {
+    name: 'Orange',
+    shades: [
+      { label: 'Tangerine', value: '#fb923c' },
+      { label: 'Burnt Orange', value: '#ea580c' },
+      { label: 'Rust', value: '#c2410c' },
+      { label: 'Dark Amber', value: '#7c2d12' },
+    ],
+  },
+  {
+    name: 'Green',
+    shades: [
+      { label: 'Mint Green', value: '#4ade80' },
+      { label: 'Emerald Pen', value: '#16a34a' },
+      { label: 'Forest Green', value: '#15803d' },
+      { label: 'Dark Pine', value: '#14532d' },
+    ],
+  },
+  {
+    name: 'Teal',
+    shades: [
+      { label: 'Aqua / Cyan', value: '#2dd4bf' },
+      { label: 'Teal Pen', value: '#0d9488' },
+      { label: 'Deep Teal', value: '#0f766e' },
+      { label: 'Dark Ocean', value: '#134e4a' },
+    ],
+  },
+  {
+    name: 'Brown',
+    shades: [
+      { label: 'Golden Ochre', value: '#d97706' },
+      { label: 'Warm Caramel', value: '#b45309' },
+      { label: 'Sepia Ink', value: '#78350f' },
+      { label: 'Dark Espresso', value: '#451a03' },
+    ],
+  },
+];
+
 export interface BgOptions {
   strength: number;
   contrast: number;
