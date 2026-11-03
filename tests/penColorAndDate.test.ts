@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   formatDate,
   DATE_FORMATS,
@@ -9,7 +11,7 @@ import {
   type TextPlacement,
   type SignaturePlacement,
 } from '../src/lib/types';
-import { DEFAULT_FONT } from '../src/lib/fonts';
+import { DEFAULT_FONT, FONTS, FONT_BY_ID, cssFont } from '../src/lib/fonts';
 import { useAppStore } from '../src/lib/store';
 import { getCachedRecoloredSignature, recolorSignatureDataUrl, adjustAlphaThickness } from '../src/lib/image';
 
@@ -181,6 +183,40 @@ describe('Store pen colour & placement synchronisation', () => {
 describe('Handwriting styling and weights', () => {
   it('uses a fine, clean handwriting font as DEFAULT_FONT instead of a bold brush', () => {
     expect(DEFAULT_FONT).toBe('shadows-into-light');
+  });
+
+  it('separates fonts into fine handwriting and standard document print categories', () => {
+    const handwritingFonts = FONTS.filter((f) => f.category === 'handwriting');
+    const standardFonts = FONTS.filter((f) => f.category === 'standard');
+
+    expect(handwritingFonts.length).toBeGreaterThanOrEqual(8);
+    expect(standardFonts).toHaveLength(3);
+
+    // Standard fonts check
+    const stdIds = standardFonts.map((f) => f.id);
+    expect(stdIds).toContain('standard-sans');
+    expect(stdIds).toContain('standard-serif');
+    expect(stdIds).toContain('standard-mono');
+
+    // No bold brush fonts in active font list
+    const activeIds = FONTS.map((f) => f.id);
+    expect(activeIds).not.toContain('caveat-brush');
+    expect(activeIds).not.toContain('kalam');
+  });
+
+  it('verifies all font files exist in public/fonts', () => {
+    const root = path.resolve(__dirname, '..');
+    for (const font of FONTS) {
+      const file = path.join(root, 'public', 'fonts', font.file);
+      expect(fs.existsSync(file), `Missing font file: ${font.file}`).toBe(true);
+    }
+  });
+
+  it('returns proper CSS fallback families for handwriting and standard fonts', () => {
+    expect(cssFont('standard-sans')).toContain('sans-serif');
+    expect(cssFont('standard-serif')).toContain('serif');
+    expect(cssFont('standard-mono')).toContain('monospace');
+    expect(cssFont('shadows-into-light')).toContain('cursive');
   });
 });
 

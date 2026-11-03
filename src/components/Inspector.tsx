@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   ArrowDown,
   ArrowUp,
+  Check,
   Copy,
   Layers,
   Minus,
@@ -13,8 +14,8 @@ import {
 } from 'lucide-react';
 import { useAppStore } from '../lib/store';
 import { clamp } from '../lib/coords';
-import { FONTS, cssFont } from '../lib/fonts';
-import type { FontId, SignaturePlacement, TextPlacement } from '../lib/types';
+import { FONTS, FONT_BY_ID, cssFont } from '../lib/fonts';
+import type { FontCategory, FontId, SignaturePlacement, TextPlacement } from '../lib/types';
 import PenColorPicker from './PenColorPicker';
 import { getCachedRecoloredSignature, recolorSignatureDataUrl } from '../lib/image';
 
@@ -65,6 +66,14 @@ export default function Inspector() {
   const sigColor = signature?.color || penColor;
   const sigThickness = signature?.thickness ?? 0;
   const [sigPreviewUrl, setSigPreviewUrl] = useState<string>('');
+  const [fontCategory, setFontCategory] = useState<FontCategory>('handwriting');
+
+  useEffect(() => {
+    if (text?.fontId) {
+      const cat = FONT_BY_ID[text.fontId]?.category || 'handwriting';
+      setFontCategory(cat);
+    }
+  }, [text?.id]);
 
   useEffect(() => {
     if (!asset?.dataUrl) {
@@ -109,8 +118,8 @@ export default function Inspector() {
           </div>
           <h2>Ready when you are</h2>
           <p>
-            Pick a signature from the library, or use the <strong>Handwriting</strong> tool to type
-            in a script font.
+            Pick a signature from the library, or use the <strong>Insert Text</strong> tool to add
+            handwritten or standard text.
           </p>
           <ol className="quick-steps">
             <li>
@@ -185,7 +194,7 @@ export default function Inspector() {
       <div className="inspector-head">
         <span className={`inspector-type ${selected.type}`}>
           {selected.type === 'signature' ? <PenLine size={14} /> : <Type size={14} />}
-          {selected.type === 'signature' ? 'Signature' : 'Handwriting'}
+          {selected.type === 'signature' ? 'Signature' : 'Text'}
         </span>
         <span className="inspector-page">Page {selected.pageIndex + 1}</span>
       </div>
@@ -372,22 +381,62 @@ export default function Inspector() {
             </div>
           </Section>
 
-          <Section title="Handwriting style">
-            <select
-              className="select-input font-select"
-              style={{ fontFamily: cssFont(text.fontId) }}
-              value={text.fontId}
-              onChange={(e) => {
-                pushHistory();
-                updatePlacement(selected.id, { fontId: e.target.value as FontId });
-              }}
-            >
-              {FONTS.map((font) => (
-                <option key={font.id} value={font.id} style={{ fontFamily: cssFont(font.id) }}>
-                  {font.name}
-                </option>
-              ))}
-            </select>
+          <Section title="Font & Style">
+            <div className="font-category-tabs" role="tablist">
+              <button
+                type="button"
+                role="tab"
+                aria-selected={fontCategory === 'handwriting'}
+                className={`font-tab-btn ${fontCategory === 'handwriting' ? 'active' : ''}`}
+                onClick={() => setFontCategory('handwriting')}
+              >
+                <span>✍️ Fine Handwriting</span>
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={fontCategory === 'standard'}
+                className={`font-tab-btn ${fontCategory === 'standard' ? 'active' : ''}`}
+                onClick={() => setFontCategory('standard')}
+              >
+                <span>📄 Standard Print</span>
+              </button>
+            </div>
+
+            <div className="font-card-list">
+              {FONTS.filter((f) => f.category === fontCategory).map((font) => {
+                const isSelected = text.fontId === font.id;
+                const sampleText = text.text.trim().split('\n')[0] || 'Sample text';
+                return (
+                  <button
+                    key={font.id}
+                    type="button"
+                    className={`font-card ${isSelected ? 'is-selected' : ''}`}
+                    onClick={() => {
+                      pushHistory();
+                      updatePlacement(selected.id, { fontId: font.id });
+                    }}
+                  >
+                    <div className="font-card-header">
+                      <span className="font-card-name">{font.name}</span>
+                      <span className="font-card-desc">{font.description}</span>
+                    </div>
+                    <div
+                      className="font-card-preview"
+                      style={{ fontFamily: cssFont(font.id) }}
+                    >
+                      {sampleText}
+                    </div>
+                    {isSelected && (
+                      <div className="font-card-check">
+                        <Check size={11} strokeWidth={3} />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
             <Field label="Size">
               <div className="input-with-unit">
                 <input
@@ -405,7 +454,7 @@ export default function Inspector() {
                 <span>pt</span>
               </div>
             </Field>
-            <Field label="Pen colour">
+            <Field label="Colour">
               <PenColorPicker
                 value={text.color || penColor}
                 onChange={setPenColor}

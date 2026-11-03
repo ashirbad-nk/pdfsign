@@ -17,7 +17,7 @@ No server uploads, no logins, no telemetry — your documents never leave your b
   - Colors are configurable individually per signature, date, or text block.
 - 🔍 **Stroke Thickness Adjustment**: Adjust signature line thickness from delicate/slender (`-3`) to bold/heavy (`+3`) with real-time preview and exact rendering in exported PDFs.
 - 📅 **Date Stamps**: Insert dates with one click in common formats (`DD/MM/YYYY`, `DD MMM YYYY`, `YYYY-MM-DD`, etc.).
-- 📝 **Handwritten & Typed Text**: Add annotations in cursive, script, or clean print styles with customizable font sizes, letter spacing, and line spacing.
+- 📝 **Insert Text (Fine Handwriting & Standard Print)**: Add annotations, form entries, or signature names. Choose from 10 delicate, non-bold handwriting scripts or standard document print fonts (Standard Sans, Serif, and Monospace) with instant visual previews.
 - 🔒 **100% Client-Side & Private**: All rendering and PDF generation happens directly in your browser.
 - 📱 **Responsive & Accessible**: Works on desktop, tablets, and mobile devices with keyboard navigation and light/dark theme support.
 - 📱 **Progressive Web App (PWA)**: Installable directly from Cloudflare Pages on Chrome, Edge, Safari (iOS), and Android with offline caching and native window controls.

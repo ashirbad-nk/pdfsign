@@ -13,7 +13,7 @@ import type { PageInfo, SignatureAsset, Tool } from '../lib/types';
 const TOOLS: { id: Tool; label: string; hint: string; icon: typeof MousePointer2 }[] = [
   { id: 'select', label: 'Select', hint: 'V', icon: MousePointer2 },
   { id: 'signature', label: 'Signature', hint: 'S', icon: PenLine },
-  { id: 'text', label: 'Handwriting', hint: 'T', icon: Type },
+  { id: 'text', label: 'Insert Text', hint: 'T', icon: Type },
 ];
 
 function PageThumbnail({ page, index }: { page: PageInfo; index: number }) {
@@ -143,6 +143,9 @@ export default function Sidebar() {
               ? 'Now click anywhere on the page to place it.'
               : 'Pick a saved signature below, or create a new one.'}
           </p>
+        )}
+        {tool === 'text' && (
+          <p className="section-hint">Click anywhere on the document to insert text.</p>
         )}
       </section>
 

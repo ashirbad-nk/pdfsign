@@ -1,22 +1,35 @@
 export type Tool = 'select' | 'signature' | 'text';
 
+export type FontCategory = 'handwriting' | 'standard';
+
 export type FontId =
-  | 'great-vibes'
-  | 'allura'
-  | 'alex-brush'
-  | 'sacramento'
-  | 'caveat-brush'
+  // Fine Handwriting (delicate / fine pen only, no bold)
   | 'shadows-into-light'
-  | 'kalam'
+  | 'cedarville-cursive'
+  | 'sacramento'
   | 'reenie-beanie'
+  | 'homemade-apple'
   | 'la-belle-aurore'
-  | 'pinyon-script';
+  | 'dawning-of-a-new-day'
+  | 'alex-brush'
+  | 'allura'
+  | 'pinyon-script'
+  // Standard Document Print
+  | 'standard-sans'
+  | 'standard-serif'
+  | 'standard-mono'
+  // Compatibility
+  | 'great-vibes'
+  | 'caveat-brush'
+  | 'kalam';
 
 export interface FontDef {
   id: FontId;
   name: string;
   family: string;
   file: string;
+  category: FontCategory;
+  description: string;
 }
 
 export interface SignatureAsset {

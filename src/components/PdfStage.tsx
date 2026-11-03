@@ -270,7 +270,7 @@ export default function PdfStage() {
         </div>
       )}
       {tool === 'text' && !pendingAssetId && !pendingDate && (
-        <div className="placing-banner">Click on the page to add handwriting</div>
+        <div className="placing-banner">Click on the page to insert text</div>
       )}
     </main>
   );
